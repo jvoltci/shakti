@@ -55,7 +55,7 @@ const HomePage = () => {
       >
         {/* Add Twitter Account Section */}
         <Grid
-          item
+          item="true"
           xs={12}
           md={6}
           display="flex"
@@ -71,7 +71,7 @@ const HomePage = () => {
 
         {/* Twitter Account List Section */}
         <Grid
-          item
+          item="true"
           xs={12}
           md={6}
           display="flex"
