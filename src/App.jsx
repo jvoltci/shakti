@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { Routes, Route, HashRouter, Navigate } from 'react-router-dom';
 import theme from './components/Theme';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children }) => {
 const App = () => (
   <AuthProvider>
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
+      <HashRouter>
         <Suspense fallback={<LoadingSpinner />}>
           <Header />
           <Routes>
@@ -46,7 +46,7 @@ const App = () => (
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </Suspense>
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   </AuthProvider>
 );
