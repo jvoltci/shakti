@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, List, ListItem, ListItemText, Switch, Typography, Skeleton } from '@mui/material';
+import { Box, IconButton, List, ListItem, ListItemText, Switch, Typography, Skeleton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 import axios from '../services/api';
 
 const TwitterAccountList = () => {
@@ -20,6 +21,15 @@ const TwitterAccountList = () => {
 
     fetchAccounts();
   }, []);
+
+  const handleDelete = async (username) => {
+    try {
+      await axios.delete(`/x/account/${username}`);
+      setAccounts((prev) => prev.filter((account) => account.username !== username));
+    } catch (error) {
+      console.error(`Failed to delete account @${username}:`, error.message);
+    }
+  };
 
   return (
     <Box
@@ -44,23 +54,33 @@ const TwitterAccountList = () => {
               </ListItem>
             ))
           : accounts.map((account) => (
-              <ListItem key={account.username}>
+              <ListItem key={account.username} secondaryAction={
+                <>
+                  <Switch
+                    checked={account.active}
+                    onChange={async () => {
+                      await axios.get(`/x/account/${account.username}/active`);
+                      setAccounts((prev) =>
+                        prev.map((acc) =>
+                          acc.username === account.username
+                            ? { ...acc, active: !acc.active }
+                            : acc
+                        )
+                      );
+                    }}
+                  />
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleDelete(account.username)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              }>
                 <ListItemText
                   primary={`@${account.username}`}
                   secondary={account.active ? 'Active' : 'Inactive'}
-                />
-                <Switch
-                  checked={account.active}
-                  onChange={async () => {
-                    await axios.get(`/x/account/${account.username}/active`);
-                    setAccounts((prev) =>
-                      prev.map((acc) =>
-                        acc.username === account.username
-                          ? { ...acc, active: !acc.active }
-                          : acc
-                      )
-                    );
-                  }}
                 />
               </ListItem>
             ))}
